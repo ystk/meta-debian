@@ -40,6 +40,9 @@ SRC_URI += " \
            file://bug1066.patch \
 "
 
+# upstream-wontfix: upstream has documented that reported function is not thread-safe
+CVE_CHECK_WHITELIST += " CVE-2023-30571"
+
 inherit autotools update-alternatives pkgconfig
 
 CPPFLAGS += "-I${WORKDIR}/extra-includes"
