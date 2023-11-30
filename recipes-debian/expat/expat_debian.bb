@@ -18,14 +18,26 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=5b8620d98e49772d95fc1d291c26aa79"
 
 #  Don't build doc to reduce dependency, it depends on docbook-to-man
 SRC_URI += "file://disable-build-doc.patch \
-            file://autotools.patch"
+            file://autotools.patch \
+            file://run-ptest \
+           "
 
 FILESEXTRAPATHS =. "${FILE_DIRNAME}/files:${COREBASE}/meta/recipes-core/expat/expat:"
 
-inherit autotools lib_package
+RDEPENDS_${PN}-ptest += "bash"
+
+inherit autotools lib_package ptest
 
 do_configure_prepend () {
 	rm -f ${S}/conftools/libtool.m4
+}
+
+do_compile_ptest() {
+	oe_runmake -C ${B}/tests runtests runtestspp
+}
+
+do_install_ptest_class-target() {
+	install -m 755 ${B}/tests/.libs/* ${D}${PTEST_PATH}
 }
 
 BBCLASSEXTEND = "native nativesdk"
