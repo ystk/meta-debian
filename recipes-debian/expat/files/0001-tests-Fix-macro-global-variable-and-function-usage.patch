@@ -1,0 +1,69 @@
+From 6c13aa441d748df2c29ebd3365b218b26e2ec61b Mon Sep 17 00:00:00 2001
+From: Kazuho Sasaki <sasaki.kazuho@meta.co.jp>
+Date: Thu, 30 Nov 2023 14:02:03 +0900
+Subject: [PATCH] tests: Fix macro, global variable and function usage
+
+This is a follow-up patch for CVE-2022-43680.patch, which causes some
+build errors of tests.
+
+Signed-off-by: Kazuho Sasaki <sasaki.kazuho@meta.co.jp>
+---
+ tests/runtests.c | 22 +++++++++-------------
+ 1 file changed, 9 insertions(+), 13 deletions(-)
+
+diff --git a/tests/runtests.c b/tests/runtests.c
+index 14b848d..6789c1c 100644
+--- a/tests/runtests.c
++++ b/tests/runtests.c
+@@ -10772,13 +10772,9 @@ END_TEST
+ static int XMLCALL
+ external_entity_parser_create_alloc_fail_handler(XML_Parser parser,
+                                                  const XML_Char *context,
+-                                                 const XML_Char *base,
+-                                                 const XML_Char *systemId,
+-                                                 const XML_Char *publicId) {
+-  UNUSED_P(base);
+-  UNUSED_P(systemId);
+-  UNUSED_P(publicId);
+-
++                                                 const XML_Char *UNUSED_P(base),
++                                                 const XML_Char *UNUSED_P(systemId),
++                                                 const XML_Char *UNUSED_P(publicId)) {
+   if (context != NULL)
+     fail("Unexpected non-NULL context");
+ 
+@@ -10802,17 +10798,17 @@ START_TEST(test_alloc_reset_after_external_entity_parser_create_fail) {
+   const char *const text = "<!DOCTYPE doc SYSTEM 'foo'><doc/>";
+ 
+   XML_SetExternalEntityRefHandler(
+-      g_parser, external_entity_parser_create_alloc_fail_handler);
+-  XML_SetParamEntityParsing(g_parser, XML_PARAM_ENTITY_PARSING_ALWAYS);
++      parser, external_entity_parser_create_alloc_fail_handler);
++  XML_SetParamEntityParsing(parser, XML_PARAM_ENTITY_PARSING_ALWAYS);
+ 
+-  if (XML_Parse(g_parser, text, (int)strlen(text), XML_TRUE)
++  if (XML_Parse(parser, text, (int)strlen(text), XML_TRUE)
+       != XML_STATUS_ERROR)
+     fail("Call to parse was expected to fail");
+ 
+-  if (XML_GetErrorCode(g_parser) != XML_ERROR_EXTERNAL_ENTITY_HANDLING)
++  if (XML_GetErrorCode(parser) != XML_ERROR_EXTERNAL_ENTITY_HANDLING)
+     fail("Call to parse was expected to fail from the external entity handler");
+ 
+-  XML_ParserReset(g_parser, NULL);
++  XML_ParserReset(parser, NULL);
+ }
+ END_TEST
+ 
+@@ -12643,7 +12639,7 @@ make_suite(void)
+     tcase_add_test(tc_alloc, test_alloc_long_public_id);
+     tcase_add_test(tc_alloc, test_alloc_long_entity_value);
+     tcase_add_test(tc_alloc, test_alloc_long_notation);
+-    tcase_add_test__ifdef_xml_dtd(
++    tcase_add_test(
+         tc_alloc, test_alloc_reset_after_external_entity_parser_create_fail);
+ 
+     suite_add_tcase(s, tc_nsalloc);
+-- 
+2.25.1
+
