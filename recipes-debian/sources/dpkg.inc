@@ -5,8 +5,8 @@ REPACK_PV = "1.19.8"
 PV = "1.19.8"
 
 DEBIAN_SRC_URI = " \
-    ${DEBIAN_SECURITY_UPDATE_MIRROR}/main/d/dpkg/dpkg_1.19.8.dsc;name=dpkg_1.19.8.dsc \
-    ${DEBIAN_SECURITY_UPDATE_MIRROR}/main/d/dpkg/dpkg_1.19.8.tar.xz;name=dpkg_1.19.8.tar.xz \
+    ${DEBIAN_MIRROR}/main/d/dpkg/dpkg_1.19.8.dsc;name=dpkg_1.19.8.dsc \
+    ${DEBIAN_MIRROR}/main/d/dpkg/dpkg_1.19.8.tar.xz;name=dpkg_1.19.8.tar.xz \
 "
 
 SRC_URI[dpkg_1.19.8.dsc.md5sum] = "34d88e113aea4e432c3f8acb0a395969"
