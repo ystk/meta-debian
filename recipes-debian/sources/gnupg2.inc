@@ -5,10 +5,10 @@ REPACK_PV = "2.2.12"
 PV = "2.2.12"
 
 DEBIAN_SRC_URI = " \
-    ${DEBIAN_SECURITY_UPDATE_MIRROR}/main/g/gnupg2/gnupg2_2.2.12-1+deb10u2.dsc;name=gnupg2_2.2.12-1+deb10u2.dsc \
-    ${DEBIAN_SECURITY_UPDATE_MIRROR}/main/g/gnupg2/gnupg2_2.2.12.orig.tar.bz2;name=gnupg2_2.2.12.orig.tar.bz2 \
-    ${DEBIAN_SECURITY_UPDATE_MIRROR}/main/g/gnupg2/gnupg2_2.2.12.orig.tar.bz2.asc;name=gnupg2_2.2.12.orig.tar.bz2.asc \
-    ${DEBIAN_SECURITY_UPDATE_MIRROR}/main/g/gnupg2/gnupg2_2.2.12-1+deb10u2.debian.tar.xz;name=gnupg2_2.2.12-1+deb10u2.debian.tar.xz \
+    ${DEBIAN_MIRROR}/main/g/gnupg2/gnupg2_2.2.12-1+deb10u2.dsc;name=gnupg2_2.2.12-1+deb10u2.dsc \
+    ${DEBIAN_MIRROR}/main/g/gnupg2/gnupg2_2.2.12.orig.tar.bz2;name=gnupg2_2.2.12.orig.tar.bz2 \
+    ${DEBIAN_MIRROR}/main/g/gnupg2/gnupg2_2.2.12.orig.tar.bz2.asc;name=gnupg2_2.2.12.orig.tar.bz2.asc \
+    ${DEBIAN_MIRROR}/main/g/gnupg2/gnupg2_2.2.12-1+deb10u2.debian.tar.xz;name=gnupg2_2.2.12-1+deb10u2.debian.tar.xz \
 "
 
 SRC_URI[gnupg2_2.2.12-1+deb10u2.dsc.md5sum] = "5585917b8d5905559eb08a83fe5caa49"
