@@ -1,0 +1,16 @@
+#!/bin/sh
+
+NCURSESLIB=@libdir@/ncurses
+LOG="$NCURSESLIB/ptest/ncurses_ptest_$(date +%Y%m%d-%H%M%S).log"
+
+find . -type f -perm 755 -name test_setupterm -exec {} -a \; | sed '/^OK /s/^/PASS: /; /^ERR /s/^/FAIL: /' | tee -a "$LOG"
+
+PASSED=$(grep -c '^PASS: ' "$LOG")
+FAILED=$(grep -c '^FAIL: ' "$LOG")
+ALL=$((PASSED + FAILED))
+
+(   echo "=== Test Summary ==="
+    echo "TOTAL: $ALL"
+    echo "PASSED: $PASSED"
+    echo "FAILED: $FAILED"
+) | tee -a "$LOG"
