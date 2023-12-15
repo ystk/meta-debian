@@ -1,0 +1,15 @@
+#!/bin/sh
+
+GMPLIB=@libdir@/gmp
+LOG="$GMPLIB/ptest/gmp_ptest_$(date +%Y%m%d-%H%M%S).log"
+
+make -C tests/ -k check-TESTS | tee -a "$LOG"
+for d in cxx misc mpf mpn mpq mpz rand; do
+    make -C tests/$d/ -k check-TESTS | tee -a "$LOG"
+done
+
+echo "=== Test Summary ===" | tee -a "$LOG"
+for key in TOTAL PASS SKIP XFAIL FAIL XPASS ERROR; do
+    count="$(grep "^# $key: " "$LOG" | awk '{total += $3} END {print total}')"
+    echo "$key: $count" | tee -a "$LOG"
+done
