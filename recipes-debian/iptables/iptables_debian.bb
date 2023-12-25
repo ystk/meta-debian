@@ -84,3 +84,36 @@ do_install_ptest () {
 }
 
 RDEPENDS_${PN}-ptest = "bash diffutils findutils util-linux"
+RRECOMMENDS_${PN}-ptest = " \
+    kernel-module-iptable-mangle \
+    kernel-module-iptable-raw \
+    kernel-module-iptable-security \
+    kernel-module-ip6-tables \
+    kernel-module-ip6table-raw \
+    kernel-module-ip6table-mangle \
+    kernel-module-ip6table-nat \
+    kernel-module-ip6table-filter \
+    kernel-module-ip6table-security \
+    kernel-module-nfnetlink \
+    kernel-module-nfnetlink-log \
+    kernel-module-xt-nflog \
+    kernel-module-xt-multiport \
+    kernel-module-xt-log \
+    kernel-module-xt-mac \
+    kernel-module-xt-tcpmss \
+    kernel-module-xt-limit \
+    kernel-module-xt-ct \
+    kernel-module-xt-helper \
+    kernel-module-xt-checksum \
+    kernel-module-xt-state \
+    kernel-module-xt-mark \
+    kernel-module-xt-comment \
+    kernel-module-xt-tcpudp \
+    kernel-module-xt-conntrack \
+    kernel-module-nf-log-common \
+    kernel-module-nf-log-ipv4 \
+    kernel-module-nf-conntrack-pptp \
+    kernel-module-nf-conntrack-netbios-ns \
+    kernel-module-ipt-reject \
+    kernel-module-ip6t-reject \
+"
