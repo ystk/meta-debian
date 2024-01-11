@@ -146,6 +146,12 @@ BBCLASSEXTEND = "native nativesdk"
 
 inherit ptest
 
+# -dev automatic dependencies fails as we don't want libmodule-build-perl-dev, its too heavy
+# # may need tweaking if DEPENDS changes
+# # Can't use ${PN}-dev here since flags with overrides and key expansion not supported
+RRECOMMENDS_coreutils-dev[nodeprrecs] = "1"
+RRECOMMENDS_${PN}-dev += "acl-dev attr-dev gmp-dev libcap-dev bash-dev findutils-dev gawk-dev shadow-dev"
+
 RDEPENDS_${PN}-ptest += "bash findutils gawk liberror-perl make perl perl-modules python3-core sed shadow"
 
 do_install_ptest () {
