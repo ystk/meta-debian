@@ -15,6 +15,9 @@ PR = "r1"
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://COPYING;beginline=8;md5=3a34942f4ae3fbf1a303160714e664ac"
 
+# CVE-2021-22926: only affects builds for MacOS.
+CVE_CHECK_WHITELIST = "CVE-2021-22926"
+
 inherit autotools pkgconfig binconfig multilib_header
 
 PACKAGECONFIG ??= "${@bb.utils.filter('DISTRO_FEATURES', 'ipv6', d)} gnutls proxy threaded-resolver zlib"
