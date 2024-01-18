@@ -17,3 +17,7 @@ SRC_URI += " \
     file://0003-cmake-support-OpenEmbedded-Qt4-tool-binary-names.patch \
     file://0004-Fail-silently-if-system-Qt-installation-is-broken.patch \
 "
+
+# This is specific to the npm package that installs cmake, so isn't
+# relevant to OpenEmbedded
+CVE_CHECK_WHITELIST += "CVE-2016-10642"
