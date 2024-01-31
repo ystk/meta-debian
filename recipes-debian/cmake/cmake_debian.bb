@@ -54,3 +54,5 @@ FILES_${PN}_append_class-nativesdk = " ${SDKPATHNATIVE}"
 FILES_${PN} += "${datadir}/cmake-${CMAKE_MAJOR_VERSION} ${datadir}/cmake ${datadir}/aclocal"
 FILES_${PN}-doc += "${docdir}/cmake-${CMAKE_MAJOR_VERSION}"
 FILES_${PN}-dev = ""
+
+BBCLASSEXTEND = "nativesdk"
