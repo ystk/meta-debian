@@ -18,6 +18,11 @@ LIC_FILES_CHKSUM = "file://COPYING;beginline=8;md5=3a34942f4ae3fbf1a303160714e66
 # CVE-2021-22926: only affects builds for MacOS.
 CVE_CHECK_WHITELIST = "CVE-2021-22926"
 
+FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
+SRC_URI += " \
+    file://temporary-workaround-for-build-error-in-7.64.0-4+deb10u8.patch \
+"
+
 inherit autotools pkgconfig binconfig multilib_header
 
 PACKAGECONFIG ??= "${@bb.utils.filter('DISTRO_FEATURES', 'ipv6', d)} gnutls proxy threaded-resolver zlib"
