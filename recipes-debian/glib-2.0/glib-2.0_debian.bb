@@ -20,6 +20,7 @@ SRC_URI += " \
     file://0001-meson.build-do-not-hardcode-linux-as-the-host-system.patch \
     file://0001-meson-do-a-build-time-check-for-strlcpy-before-attem.patch \
     file://glib-meson.cross \
+    file://0001-build-Fix-a-typo-in-the-test-whether-_NL_ABALTMON_n-.patch \
 "
 SRC_URI_append_class-natve = "file://relocate-modules.patch"
 
