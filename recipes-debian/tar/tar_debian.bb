@@ -55,6 +55,7 @@ do_install_append_libc-musl() {
 # add for ptest support
 SRC_URI += " \
     file://run-ptest \
+    file://0001-Fix-the-difflink-test.patch \
 "
 
 inherit ptest

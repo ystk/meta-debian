@@ -1,0 +1,37 @@
+From 1ed62596cf859b73612abe8eb35616413ec5613c Mon Sep 17 00:00:00 2001
+From: Sergey Poznyakoff <gray@gnu.org>
+Date: Fri, 28 Dec 2018 17:53:35 +0200
+Subject: [PATCH] Fix the difflink test
+
+Hardlinking a symlink produces hardlink on BSD and symlink
+on GNU/Linux. Avoid the ambiguity.
+
+* tests/difflink.at: Create hard link from a regular file.
+---
+ tests/difflink.at | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tests/difflink.at b/tests/difflink.at
+index 2de035c..5d86ba0 100644
+--- a/tests/difflink.at
++++ b/tests/difflink.at
+@@ -20,14 +20,14 @@ AT_TAR_CHECK([
+ mkdir a
+ genfile -f a/x
+ ln -s x a/y
+-ln -P a/y a/z
++ln a/x a/z
+ tar cf a.tar a/x a/y a/z
+ rm a/z
+ ln -s x a/z
+ tar df a.tar
+ ],
+ [1],
+-[a/z: Not linked to a/y
++[a/z: Not linked to a/x
+ ],
+ [],
+ [],[],[ustar]) # Testing one format is enough
+-- 
+2.25.1
+
