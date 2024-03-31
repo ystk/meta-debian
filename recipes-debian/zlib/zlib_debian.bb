@@ -19,6 +19,8 @@ LIC_FILES_CHKSUM = " \
 file://zlib.h;beginline=4;endline=23;md5=627e6ecababe008a45c70e318ae7014e \
 "
 
+CVE_PRODUCT = "zlib:zlib"
+
 SRC_URI += "file://ldflags-tests.patch \
             file://run-ptest \
 "
