@@ -5,9 +5,9 @@ REPACK_PV = "5.2.4"
 PV = "5.2.4"
 
 DEBIAN_SRC_URI = " \
-    ${DEBIAN_SECURITY_UPDATE_MIRROR}/main/x/xz-utils/xz-utils_5.2.4-1+deb10u1.dsc;name=xz-utils_5.2.4-1+deb10u1.dsc \
-    ${DEBIAN_SECURITY_UPDATE_MIRROR}/main/x/xz-utils/xz-utils_5.2.4.orig.tar.xz;name=xz-utils_5.2.4.orig.tar.xz \
-    ${DEBIAN_SECURITY_UPDATE_MIRROR}/main/x/xz-utils/xz-utils_5.2.4-1+deb10u1.debian.tar.xz;name=xz-utils_5.2.4-1+deb10u1.debian.tar.xz \
+    ${DEBIAN_MIRROR}/main/x/xz-utils/xz-utils_5.2.4-1+deb10u1.dsc;name=xz-utils_5.2.4-1+deb10u1.dsc \
+    ${DEBIAN_MIRROR}/main/x/xz-utils/xz-utils_5.2.4.orig.tar.xz;name=xz-utils_5.2.4.orig.tar.xz \
+    ${DEBIAN_MIRROR}/main/x/xz-utils/xz-utils_5.2.4-1+deb10u1.debian.tar.xz;name=xz-utils_5.2.4-1+deb10u1.debian.tar.xz \
 "
 
 SRC_URI[xz-utils_5.2.4-1+deb10u1.dsc.md5sum] = "5419d0cd232cf7f772f0915c56695aeb"

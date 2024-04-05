@@ -1,0 +1,57 @@
+From 2e9ef759bf893c66376686968c05ce5e7d9890a5 Mon Sep 17 00:00:00 2001
+From: Takahiro Terada <takahiro.terada@miraclelinux.com>
+Date: Wed, 7 Feb 2024 17:26:31 +0900
+Subject: [PATCH] lib/cookie.c: Add workaround for build error in
+ curl_7.64.0-4+deb10u8
+
+When building with "--without-libpsl" in configure, build error occurs because
+debian's "0005-cookie-lowercase-the-domain-names-before-PSL-checks.patch" file
+was mistake.
+
+Build error:
+| ../../curl-7.64.0/lib/cookie.c: In function 'Curl_cookie_add':
+| ../../curl-7.64.0/lib/cookie.c:959:9: error: 'acceptable' undeclared (first use in this function); did you mean 'accept'?
+|   959 |         acceptable = !bad_domain(co->domain);
+|       |         ^~~~~~~~~~
+|       |         accept
+
+So, as temporary workaround, add patch to fix this issue.
+
+Signed-off-by: Takahiro Terada <takahiro.terada@miraclelinux.com>
+---
+ lib/cookie.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/cookie.c b/lib/cookie.c
+index 04b7de4..dadba2a 100644
+--- a/lib/cookie.c
++++ b/lib/cookie.c
+@@ -932,8 +932,8 @@ Curl_cookie_add(struct Curl_easy *data,
+   if(!noexpire)
+     remove_expired(c);
+ 
+-  if(domain && co->domain && !isip(co->domain)) {
+ #ifdef USE_LIBPSL
++  if(domain && co->domain && !isip(co->domain)) {
+   /*
+    * Check if the domain is a Public Suffix and if yes, ignore the cookie. We
+    * must also check that the data handle isn't NULL since the psl code will
+@@ -954,7 +954,6 @@ Curl_cookie_add(struct Curl_easy *data,
+         Curl_psl_release(data);
+       }
+       else
+-#endif
+         /* Without libpsl, do the best we can. */
+         acceptable = !bad_domain(co->domain);
+     }
+@@ -966,6 +965,7 @@ Curl_cookie_add(struct Curl_easy *data,
+       return NULL;
+     }
+   }
++#endif
+ 
+   myhash = cookiehash(co->domain);
+   clist = c->cookies[myhash];
+-- 
+2.25.1
+
