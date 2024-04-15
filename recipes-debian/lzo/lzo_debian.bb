@@ -6,8 +6,7 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263 \
                     file://src/lzo_init.c;beginline=5;endline=25;md5=9ae697ca01829b0a383c5d2d163e0108"
 
 inherit debian-package
-BPN = "lzo2"
-require recipes-debian/sources/${BPN}.inc
+require recipes-debian/sources/lzo2.inc
 DEBIAN_UNPACK_DIR = "${WORKDIR}/lzo-${PV}"
 FILESEXTRAPATHS =. "${FILE_DIRNAME}/lzo:${COREBASE}/meta/recipes-support/lzo/lzo/:"
 
