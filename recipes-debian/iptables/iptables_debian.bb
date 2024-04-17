@@ -36,7 +36,7 @@ PACKAGECONFIG[ipv6] = "--enable-ipv6,--disable-ipv6,"
 PACKAGECONFIG[libnfnetlink] = "--enable-libnfnetlink,--disable-libnfnetlink,libnfnetlink libnetfilter-conntrack"
 
 # libnftnl recipe is in meta-networking layer(previously known as libnftables)
-PACKAGECONFIG[libnftnl] = "--enable-nftables,--disable-nftables,libnftnl"
+PACKAGECONFIG[libnftnl] = "--enable-nftables,--disable-nftables,libnftnl bison-native"
 
 do_configure_prepend() {
 	# Remove some libtool m4 files
