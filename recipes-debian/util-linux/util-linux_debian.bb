@@ -16,7 +16,6 @@ LIC_FILES_CHKSUM = "file://README.licensing;md5=972a134f1e14b2b060e365df2fab0099
 inherit debian-package
 require recipes-debian/sources/util-linux.inc
 FILESPATH_append = ":${COREBASE}/meta/recipes-core/util-linux/util-linux"
-DEBIAN_QUILT_PATCHES = ""
 
 SRC_URI += "file://configure-sbindir.patch \
             file://runuser.pamd \
