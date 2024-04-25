@@ -23,6 +23,7 @@ SRC_URI += " \
     file://temporary-workaround-for-build-error-in-7.64.0-4+deb10u8.patch \
     file://run-ptest \
     file://disable-tests \
+    file://0001-tests-runtests.pl-Backport-commits-related-to-gettin.patch \
 "
 
 inherit autotools pkgconfig binconfig multilib_header ptest
