@@ -13,7 +13,12 @@ inherit debian-package
 require recipes-debian/sources/lsb.inc
 DEBIAN_UNPACK_DIR = "${WORKDIR}/work"
 
-inherit python-dir
+inherit python-dir ptest
+
+SRC_URI += " \
+    file://run-ptest \
+    file://0001-test-Fix-range-of-exit-on-error-to-make-tests-keep-g.patch \
+"
 
 do_install(){
 	# Install files for lsb-base
@@ -64,6 +69,10 @@ do_install(){
 		ln -sf ld.so.1 ld-lsb-ppc32.so.2
 		ln -sf ld.so.1 ld-lsb-ppc32.so.3
 	fi
+}
+
+do_install_ptest() {
+    install -m 755 ${S}/test/lsb-test.sh ${D}${PTEST_PATH}
 }
 
 PACKAGES =+ "${PN}-release"

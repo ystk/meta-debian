@@ -1,0 +1,2 @@
+#!/bin/sh
+./lsb-test.sh /lib/lsb
