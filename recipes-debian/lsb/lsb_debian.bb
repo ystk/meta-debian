@@ -95,5 +95,5 @@ RDEPENDS_${PN}-release += " \
     python3-core \
 "
 
-RPROVIDES_${PN} += "lsb-base"
+RPROVIDES_${PN} += "lsb-base initd-functions"
 PKG_${PN} = "lsb-base"
