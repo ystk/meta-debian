@@ -1,0 +1,21 @@
+From 8a550e5feccb0b2bc621754ee5da61ec16c99b81 Mon Sep 17 00:00:00 2001
+From: Kazuho Sasaki <sasaki.kazuho@meta.co.jp>
+Date: Wed, 1 May 2024 13:02:53 +0900
+Subject: [PATCH] Autest.c: Fix return code
+
+Signed-off-by: Kazuho Sasaki <sasaki.kazuho@meta.co.jp>
+---
+ Autest.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Autest.c b/Autest.c
+index efb3da8..2c01f53 100644
+--- a/Autest.c
++++ b/Autest.c
+@@ -70,5 +70,5 @@ main (int argc, char **argv)
+ 	state = XauWriteAuth (output, &test_data);
+ 	fclose (output);
+     }
+-    return (state = 1) ? 0 : 1;
++    return (state == 1) ? 0 : 1;
+ }
