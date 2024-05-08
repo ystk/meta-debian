@@ -38,3 +38,6 @@ SRC_URI += "\
 "
 
 REQUIRED_DISTRO_FEATURES = ""
+
+# CVE-2023-37769: This is for test program (stress-test) and it's not distributed by binary package.
+CVE_CHECK_WHITELIST = "CVE-2023-37769"
