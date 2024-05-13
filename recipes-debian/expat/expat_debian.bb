@@ -20,6 +20,7 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=5b8620d98e49772d95fc1d291c26aa79"
 SRC_URI += "file://disable-build-doc.patch \
             file://autotools.patch \
             file://run-ptest \
+            file://0001-tests-minicheck-Modify-test-output-for-meta-debian.patch \
            "
 
 FILESEXTRAPATHS =. "${FILE_DIRNAME}/files:${COREBASE}/meta/recipes-core/expat/expat:"
