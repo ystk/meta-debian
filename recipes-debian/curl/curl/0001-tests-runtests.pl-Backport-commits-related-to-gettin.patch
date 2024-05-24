@@ -1,0 +1,61 @@
+From b6d3a52e6c6106df860bb49f3b389a7ce831f4b2 Mon Sep 17 00:00:00 2001
+From: Takahiro Terada <takahiro.terada@miraclelinux.com>
+Date: Thu, 25 Apr 2024 19:35:37 +0900
+Subject: [PATCH] tests/runtests.pl: Backport commits related to getting test
+ numbers
+
+The test suite of curl runs test numbers retrieved by get_disttests function in
+runtest.pl. Previously, the test numbers were retrieved using make command
+within that function. In curl-master [1], improved to parse Makefile.inc file.
+
+So backport the following commits related to test numbers:
+  - 3c0f4622c runtests: parse data/Makefile.inc instead of using make
+  - dd47b0cce runtests: also find the last test in Makefile.inc
+  - 2cb0eaba7 runtests.pl: tolerate test directories without Makefile.inc
+
+[1] https://github.com/curl/curl.git
+
+Signed-off-by: Takahiro Terada <takahiro.terada@miraclelinux.com>
+---
+ tests/runtests.pl | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
+
+diff --git a/tests/runtests.pl b/tests/runtests.pl
+index 6c8b903..3b790cc 100755
+--- a/tests/runtests.pl
++++ b/tests/runtests.pl
+@@ -519,10 +519,19 @@ sub checkcmd {
+ #######################################################################
+ # Get the list of tests that the tests/data/Makefile.am knows about!
+ #
+-my $disttests;
++my $disttests = "";
+ sub get_disttests {
+-    my @dist = `cd data && make show`;
+-    $disttests = join("", @dist);
++    # If a non-default $TESTDIR is being used there may not be any
++    # Makefile.inc in which case there's nothing to do.
++    open(D, "<$TESTDIR/Makefile.inc") or return;
++    while(<D>) {
++        chomp $_;
++        if(($_ =~ /^#/) ||($_ !~ /test/)) {
++            next;
++        }
++        $disttests .= join("", $_);
++    }
++    close(D);
+ }
+ 
+ #######################################################################
+@@ -3221,7 +3230,7 @@ sub singletest {
+     # timestamp test preparation start
+     $timeprepini{$testnum} = Time::HiRes::time() if($timestats);
+ 
+-    if($disttests !~ /test$testnum\W/ ) {
++    if($disttests !~ /test$testnum(\W|\z)/ ) {
+         logmsg "Warning: test$testnum not present in tests/data/Makefile.inc\n";
+     }
+     if($disabled{$testnum}) {
+-- 
+2.25.1
+

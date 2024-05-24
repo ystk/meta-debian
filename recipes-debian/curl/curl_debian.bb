@@ -21,9 +21,12 @@ CVE_CHECK_WHITELIST = "CVE-2021-22926"
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 SRC_URI += " \
     file://temporary-workaround-for-build-error-in-7.64.0-4+deb10u8.patch \
+    file://run-ptest \
+    file://disable-tests \
+    file://0001-tests-runtests.pl-Backport-commits-related-to-gettin.patch \
 "
 
-inherit autotools pkgconfig binconfig multilib_header
+inherit autotools pkgconfig binconfig multilib_header ptest
 
 PACKAGECONFIG ??= "${@bb.utils.filter('DISTRO_FEATURES', 'ipv6', d)} gnutls proxy threaded-resolver zlib"
 PACKAGECONFIG_class-native = "ipv6 proxy ssl threaded-resolver zlib"
@@ -74,6 +77,28 @@ do_install_append_class-target() {
 	    -e 's|${DEBUG_PREFIX_MAP}||g' \
 	    ${D}${bindir}/curl-config
 }
+
+do_compile_ptest() {
+        oe_runmake -C ${B}/tests
+}
+
+do_install_ptest() {
+        cat  ${WORKDIR}/disable-tests >> ${S}/tests/data/DISABLED
+        rm -f ${B}/tests/configurehelp.pm
+        cp -rf ${B}/tests ${D}${PTEST_PATH}
+        rm -f ${D}${PTEST_PATH}/tests/libtest/.libs/libhostname.la
+        rm -f ${D}${PTEST_PATH}/tests/libtest/libhostname.la
+        mv ${D}${PTEST_PATH}/tests/libtest/.libs/* ${D}${PTEST_PATH}/tests/libtest/
+        mv ${D}${PTEST_PATH}/tests/libtest/libhostname.so ${D}${PTEST_PATH}/tests/libtest/.libs/
+        cp -rf ${S}/tests ${D}${PTEST_PATH}
+        find ${D}${PTEST_PATH}/ -type f -name Makefile.am -o -name Makefile.in -o -name Makefile -delete
+        install -d ${D}${PTEST_PATH}/src
+        ln -sf ${bindir}/curl   ${D}${PTEST_PATH}/src/curl
+        cp -rf ${D}${bindir}/curl-config ${D}${PTEST_PATH}
+}
+
+RDEPENDS_${PN}-ptest += "bash perl-modules"
+RDEPENDS_${PN}-ptest_append_libc-glibc = " locale-base-en-us"
 
 PACKAGES =+ "lib${BPN}"
 

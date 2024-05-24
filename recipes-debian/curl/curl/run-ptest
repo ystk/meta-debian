@@ -1,0 +1,10 @@
+#!/bin/sh
+
+cd tests
+
+# Run all tests, don't stop on first failure
+# Don't use valgrind if it is found
+# Use automake-style output
+# Print log output on failure
+# Don't run the flaky tests
+./runtests.pl -a -n -am -p '!flaky'
