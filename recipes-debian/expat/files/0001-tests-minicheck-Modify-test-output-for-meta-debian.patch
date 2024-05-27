@@ -1,0 +1,71 @@
+From 27273389ad891ec31172cbc1d6478d5ae07f4764 Mon Sep 17 00:00:00 2001
+From: Takahiro Terada <takahiro.terada@miraclelinux.com>
+Date: Thu, 16 May 2024 13:27:37 +0900
+Subject: [PATCH] tests/minicheck: Modify test output for meta-debian
+
+Adds PASS/FAIL output to ptest log, similar to the output of other packages'
+ptests.
+
+With the update of 2.2.6-2+deb10u7, many outputs to stderr have been added.
+Change stdout/stderr to unbuffered to prevent mixed output.
+
+This patch is for qemu_ptest on meta-debian.
+
+```
+  root@qemuarm64:/usr/lib/expat/ptest# ./run-ptest
+  runtests
+  Expat version: expat_2.2.6
+  PASS: namespace allocation tests, test_nsalloc_xmlns
+  PASS: namespace allocation tests, test_nsalloc_parse_buffer
+  ...
+```
+
+Signed-off-by: Takahiro Terada <takahiro.terada@miraclelinux.com>
+---
+ tests/minicheck.c | 7 +++++--
+ tests/runtests.c  | 4 ++++
+ 2 files changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/tests/minicheck.c b/tests/minicheck.c
+index be1e37e..3d1a396 100644
+--- a/tests/minicheck.c
++++ b/tests/minicheck.c
+@@ -155,8 +155,8 @@ static void
+ add_failure(SRunner *runner, int verbosity)
+ {
+     runner->nfailures++;
+-    if (verbosity >= CK_VERBOSE) {
+-        printf("%s:%d: %s\n", _check_current_filename,
++    if (verbosity) {
++        printf("FAIL: %s:%d: %s\n", _check_current_filename,
+                _check_current_lineno, _check_current_function);
+     }
+ }
+@@ -197,6 +197,9 @@ srunner_run_all(SRunner *runner, int verbosity)
+                 }
+                 tc->teardown();
+             }
++            if (verbosity) {
++                printf("PASS: %s, %s\n", tc->name, _check_current_function);
++            }
+         }
+         tc = tc->next_tcase;
+     }
+diff --git a/tests/runtests.c b/tests/runtests.c
+index 066a69a..36714a8 100644
+--- a/tests/runtests.c
++++ b/tests/runtests.c
+@@ -13568,6 +13568,10 @@ main(int argc, char *argv[])
+     Suite *s = make_suite();
+     SRunner *sr = srunner_create(s);
+ 
++    /* Change stdout/stderr to unbuffered to prevent mixed output */
++    setbuf(stdout, NULL);
++    setbuf(stderr, NULL);
++
+     /* run the tests for internal helper functions */
+     testhelper_is_whitespace_normalized();
+ 
+-- 
+2.25.1
+
