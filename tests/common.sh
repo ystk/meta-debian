@@ -168,4 +168,5 @@ function get_all_packages {
 
 function setup_security_update_repository() {
 	set_var "DEBIAN_SECURITY_UPDATE_MIRROR" "http://security.debian.org/debian-security/pool/updates" conf/local.conf
+	set_var "DEBIAN_ELTS_SECURITY_UPDATE_MIRROR" "http://deb.freexian.com/extended-lts/pool" conf/local.conf
 }
