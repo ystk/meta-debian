@@ -11,6 +11,9 @@ TARGET_VENDOR = "-deby"
 # is now necessary to pull updates by Debian LTS
 DEBIAN_SECURITY_UPDATE_MIRROR ?= "http://security.debian.org/debian-security/pool/updates"
 
+# Extended LTS Updates for Debian 10 Buster
+DEBIAN_ELTS_SECURITY_UPDATE_MIRROR ?= "http://deb.freexian.com/extended-lts/pool"
+
 # Add an eventhandler that generates DEBIAN_SRC_URI information
 # from Debian apt repository.
 INHERIT += "debian-source"
