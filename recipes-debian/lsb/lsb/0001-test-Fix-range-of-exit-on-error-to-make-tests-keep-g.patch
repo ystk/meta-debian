@@ -1,0 +1,30 @@
+From 5cd729ad89bb451ee2705290365103e5de7c0807 Mon Sep 17 00:00:00 2001
+From: Kazuho Sasaki <sasaki.kazuho@meta.co.jp>
+Date: Wed, 1 May 2024 15:22:08 +0900
+Subject: [PATCH] test: Fix range of exit-on-error to make tests keep going
+
+Signed-off-by: Kazuho Sasaki <sasaki.kazuho@meta.co.jp>
+---
+ test/lsb-test.sh | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/test/lsb-test.sh b/test/lsb-test.sh
+index 2db3457..177afcd 100644
+--- a/test/lsb-test.sh
++++ b/test/lsb-test.sh
+@@ -1,5 +1,6 @@
+-#!/bin/sh -e
++#!/bin/sh
+ 
++set -e
+ echo "Importing $1/init-functions"
+ . $1/init-functions
+ 
+@@ -8,6 +9,7 @@ log_success_msg "This should succeed"
+ log_failure_msg "This fails miserably"
+ 
+ echo "OK!"
++set +e
+ 
+ # Test pidofproc sanity checking.
+ 
