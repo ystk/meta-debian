@@ -1,0 +1,32 @@
+From bd3466544d3d65ea6ecc0283ac0d7a9d2abcbc05 Mon Sep 17 00:00:00 2001
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Date: Wed, 8 Aug 2018 21:52:50 +0200
+Subject: [PATCH] tests: shell: validate too deep jumpstack from basechain
+
+If there is no basechain, the validation is never exercised.
+
+Too deep nested chains are fine as long as they are not connected to a
+basechain.
+
+Update test to add a basechain so we exercise validation.
+
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ tests/shell/testcases/chains/0002jumps_1 | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/tests/shell/testcases/chains/0002jumps_1 b/tests/shell/testcases/chains/0002jumps_1
+index 0cc8928..4d163b0 100755
+--- a/tests/shell/testcases/chains/0002jumps_1
++++ b/tests/shell/testcases/chains/0002jumps_1
+@@ -6,7 +6,9 @@ MAX_JUMPS=16
+ 
+ $NFT add table t
+ 
+-for i in $(seq 1 $MAX_JUMPS)
++$NFT add chain t c1 { type filter hook input priority 0\; }
++
++for i in $(seq 2 $MAX_JUMPS)
+ do
+ 	$NFT add chain t c${i}
+ done
