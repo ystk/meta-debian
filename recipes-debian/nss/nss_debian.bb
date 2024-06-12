@@ -263,3 +263,5 @@ FILES_${PN}-dev = "\
 
 BBCLASSEXTEND = "native nativesdk"
 
+# CVE-2006-5201: only affects for Sun Solaris.
+CVE_CHECK_WHITELIST += "CVE-2006-5201"
