@@ -1,0 +1,42 @@
+From 35221986d51d7e86a4f8355c9f4ef723f039e22e Mon Sep 17 00:00:00 2001
+From: Kazuho Sasaki <sasaki.kazuho@meta.co.jp>
+Date: Thu, 28 Dec 2023 14:24:25 +0900
+Subject: [PATCH] testsuite: Prevent deletion of test binaries
+
+This patch is intended to use for ptest.
+---
+ testsuite/lib/libffi.exp | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/testsuite/lib/libffi.exp b/testsuite/lib/libffi.exp
+index 5051d31..d071ba1 100644
+--- a/testsuite/lib/libffi.exp
++++ b/testsuite/lib/libffi.exp
+@@ -64,9 +64,6 @@ proc libffi-dg-test-1 { target_compile prog do_what extra_tool_flags } {
+ 	    # Should this be handled elsewhere?
+ 	    # YES.
+ 	    set output_file "./[file rootname [file tail $prog]].exe"
+-	    # This is the only place where we care if an executable was
+-	    # created or not.  If it was, dg.exp will try to run it.
+-	    remote_file build delete $output_file;
+ 	}
+ 	default {
+ 	    perror "$do_what: not a valid dg-do keyword"
+@@ -272,7 +269,7 @@ proc libffi-dg-runtest { testcases default-extra-flags } {
+ 
+ 	foreach flags $option_list {
+ 	    verbose "Testing $nshort, $flags" 1
+-	    dg-test $test $flags ${default-extra-flags}
++	    dg-test -keep-output $test $flags ${default-extra-flags}
+ 	}
+     }
+ }
+@@ -312,7 +309,7 @@ proc run-many-tests { testcases extra_flags } {
+             foreach abi $abis {
+                 set options [concat $common $opt $abi]
+                 verbose "Testing $testname, $options" 1
+-                dg-test $test $options ""
++                dg-test -keep-output $test $options ""
+             }
+         }
+     }
