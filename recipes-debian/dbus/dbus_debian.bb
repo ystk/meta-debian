@@ -20,7 +20,13 @@ DEPENDS = "expat virtual/libintl autoconf-archive"
 RDEPENDS_dbus_class-native = ""
 RDEPENDS_dbus_class-nativesdk = ""
 
+# The following lines are obtained from ptest.bbclass
+PTEST_ENABLED = "${@bb.utils.contains('DISTRO_FEATURES', 'ptest', '1', '0', d)}"
+PTEST_ENABLED_class-native = ""
+PTEST_ENABLED_class-nativesdk = ""
+PTEST_ENABLED_class-cross-canadian = ""
 PACKAGES += "${@bb.utils.contains('PTEST_ENABLED', '1', 'dbus-ptest', '', d)}"
+
 ALLOW_EMPTY_dbus-ptest = "1"
 RDEPENDS_dbus-ptest_class-target = "dbus-test-ptest"
 
