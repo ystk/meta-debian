@@ -1,7 +1,7 @@
 #
 # debian-source.bbclass
 #
-# Parse Debian Sources.xz from apt repo
+# Parse Debian Sources.gz from apt repo
 # to generate informations for DEBIAN_SRC_URI and PV.
 
 DEBIAN_CODENAME ?= "${DISTRO_CODENAME}"
@@ -9,9 +9,9 @@ DEBIAN_SOURCE_ENABLED ?= "0"
 DEBIAN_SRC_FORCE_REGEN ?= "0"
 DEBIAN_SECURITY_UPDATE_ENABLED ?= "0"
 
-def fetch_Sources_xz(debian_mirror, debian_security_update_enabled, d):
+def fetch_Sources_gz(debian_mirror, debian_security_update_enabled, d):
     """
-    Download 'dists/<codename>/main/source/Sources.xz' from Debian mirror.
+    Download 'dists/<codename>/main/source/Sources.gz' from Debian mirror.
     This file contains information about list tar files, checksum,
     version, directory location on Debian apt repo and many others fields.
     """
@@ -21,36 +21,58 @@ def fetch_Sources_xz(debian_mirror, debian_security_update_enabled, d):
 
     debian_codename = d.getVar('DEBIAN_CODENAME', True)
 
+    if debian_mirror is None or debian_mirror == '':
+        return False
+
     # DEBIAN_MIRROR is like http://ftp.debian.org/debian/pool
     # but we don't want a path with 'pool'
+    debian_mirror_nopool = ''
     if debian_security_update_enabled:
-        debian_mirror_nopool = debian_mirror.replace('/debian-security/pool/updates', '/debian-security')
+        if '/debian-security' in debian_mirror and '/pool/updates' in debian_mirror:
+            debian_mirror_nopool = debian_mirror.replace('/pool/updates', '')
+        if '/extended-lts' in debian_mirror and '/pool' in debian_mirror:
+            debian_mirror_nopool = debian_mirror.replace('/pool', '')
     else:
-        debian_mirror_nopool = debian_mirror.replace('/debian/pool', '/debian')
+        debian_mirror_nopool = debian_mirror.replace('/pool', '')
 
-    # Get checksum of Sources.xz from Release file
-    bb.plain('Checking Debian Release ...')
+    if debian_mirror_nopool == '':
+        return False
+
+    # Get checksum of Sources.gz from Release file
     if debian_security_update_enabled:
-        release_file_url = '%s/dists/%s/updates/Release' % (
-            debian_mirror_nopool, debian_codename)
+        if 'debian-security' in debian_mirror_nopool:
+            release_file_url = '%s/dists/%s/updates/Release' % (
+                debian_mirror_nopool, debian_codename)
+        if 'extended-lts' in debian_mirror_nopool:
+            release_file_url = '%s/dists/%s-lts/Release' % (
+                debian_mirror_nopool, debian_codename)
     else:
         release_file_url = '%s/dists/%s/Release' % (
             debian_mirror_nopool, debian_codename)
 
-    release_file = urllib.request.urlopen(release_file_url).read()
+    try:
+        bb.plain('Checking Debian Release ... %s' % release_file_url)
+        release_file = urllib.request.urlopen(release_file_url).read()
+    except Exception as e:
+        bb.warn("Failed to check Debian Release. (%s)" % e)
+        return False
+
     release_content = release_file.decode('utf-8').split('\n')
-    md5sum_Source_xz = ''
+    md5sum_Source_gz = ''
+    sources_gz_line = r'^ \S{32}\s*\S+\s*main/source/Sources.gz'
     for line in release_content:
-        sources_xz_line = r'^ \S{32}\s*\S+\s*main/source/Sources.xz'
-        if re.match(sources_xz_line, line):
-            md5sum_Source_xz = line.split()[0]
+        if re.match(sources_gz_line, line):
+            md5sum_Source_gz = line.split()[0]
 
     dl_dir = d.getVar('DL_DIR', True)
     old_Sources_xz = os.path.join(dl_dir,'Sources.xz')
     if os.path.isfile(old_Sources_xz):
-        old_md5sum_Source_xz = bb.utils.md5_file(old_Sources_xz)
-        if md5sum_Source_xz == old_md5sum_Source_xz:
-            bb.plain('Sources.xz is not changed.')
+        os.remove(old_Sources_xz)
+    old_Sources_gz = os.path.join(dl_dir,'Sources.gz')
+    if os.path.isfile(old_Sources_gz):
+        old_md5sum_Source_gz = bb.utils.md5_file(old_Sources_gz)
+        if md5sum_Source_gz == old_md5sum_Source_gz:
+            bb.plain('Sources.gz is not changed.')
             force = d.getVar('DEBIAN_SRC_FORCE_REGEN', True)
             if force != "1":
                 return False
@@ -58,29 +80,33 @@ def fetch_Sources_xz(debian_mirror, debian_security_update_enabled, d):
                 bb.plain('Force regenerate source code information.')
                 return True
         else:
-            os.remove(old_Sources_xz)
+            os.remove(old_Sources_gz)
 
-    # Get Sources.xz file
+    # Get Sources.gz file
     if debian_security_update_enabled:
-        sources_xz = '%s/dists/%s/updates/main/source/Sources.xz;md5sum=%s' % (
-            debian_mirror_nopool, debian_codename, md5sum_Source_xz)
+        if 'debian-security' in debian_mirror_nopool:
+            sources_gz = '%s/dists/%s/updates/main/source/Sources.gz;md5sum=%s' % (
+                debian_mirror_nopool, debian_codename, md5sum_Source_gz)
+        if 'extended-lts' in debian_mirror_nopool:
+            sources_gz = '%s/dists/%s-lts/main/source/Sources.gz;md5sum=%s' % (
+                debian_mirror_nopool, debian_codename, md5sum_Source_gz)
     else:
-        sources_xz = '%s/dists/%s/main/source/Sources.xz;md5sum=%s' % (
-            debian_mirror_nopool, debian_codename, md5sum_Source_xz)
+        sources_gz = '%s/dists/%s/main/source/Sources.gz;md5sum=%s' % (
+            debian_mirror_nopool, debian_codename, md5sum_Source_gz)
 
     try:
-        bb.plain('Fetching Debian Sources.xz ...')
-        fetcher = bb.fetch2.Fetch([sources_xz], d)
+        bb.plain('Fetching Debian Sources.gz ... %s' % sources_gz)
+        fetcher = bb.fetch2.Fetch([sources_gz], d)
         fetcher.download()
     except bb.fetch2.BBFetchException as e:
-        bb.warn("Failed to fetch Sources.xz. Continue building.")
+        bb.warn("Failed to fetch Sources.gz. Continue building.")
         return False
 
     return True
 
 def save_to_file(old_pkg_dpv_map, package, dpv, pv, repack_pv, directory, files, md5sum, sha256sum, debian_security_update_enabled, d):
     """
-    When parsing Sources.xz, informations about DEBIAN_SRC_URI and PV will be save
+    When parsing Sources.gz, informations about DEBIAN_SRC_URI and PV will be save
     to meta-debian/recipes-debian/sources/<source name>.inc.
 
     It's hard to check which recipe that package belongs to
@@ -105,7 +131,7 @@ def save_to_file(old_pkg_dpv_map, package, dpv, pv, repack_pv, directory, files,
             continue
         filepath = '%s/recipes-debian/sources/%s.inc' % (layerdir, package)
         if not os.path.isfile(filepath):
-           continue
+            continue
 
         import re
         epoch = ''
@@ -124,7 +150,10 @@ def save_to_file(old_pkg_dpv_map, package, dpv, pv, repack_pv, directory, files,
         source_info += 'REPACK_PV = "%s"\n' % repack_pv
         source_info += 'PV = "%s"\n' % pv
         if debian_security_update_enabled:
-            debian_uri = re.sub("^pool/updates/", "${DEBIAN_SECURITY_UPDATE_MIRROR}/", directory)
+            if "pool/updates/" in directory:
+                debian_uri = re.sub("^pool/updates/", "${DEBIAN_SECURITY_UPDATE_MIRROR}/", directory)
+            else:
+                debian_uri = re.sub("^pool/", "${DEBIAN_ELTS_SECURITY_UPDATE_MIRROR}/", directory)
         else:
             debian_uri = re.sub("^pool/", "${DEBIAN_MIRROR}/", directory)
         src_uri = 'DEBIAN_SRC_URI = " \\\n'
@@ -146,18 +175,18 @@ def save_to_file(old_pkg_dpv_map, package, dpv, pv, repack_pv, directory, files,
         f.write(source_info)
         f.close()
 
-def parse_Sources_xz(old_pkg_dpv_map, debian_security_update_enabled, d):
+def parse_Sources_gz(old_pkg_dpv_map, debian_security_update_enabled, d):
     """
-    Parse Sources.xz to get informations about source package's tarball.
+    Parse Sources.gz to get informations about source package's tarball.
     """
-    import lzma
+    import gzip
     import re
 
     dl_dir = d.getVar('DL_DIR', True)
-    sources_xz = dl_dir + "/Sources.xz"
+    sources_gz = dl_dir + "/Sources.gz"
 
-    with lzma.open(sources_xz, 'rt') as f:
-        bb.plain('Parsing Debian Sources.xz ...')
+    with gzip.open(sources_gz, 'rt') as f:
+        bb.plain('Parsing Debian Sources.gz ...')
 
         package = ''
         directory = ''
@@ -262,17 +291,25 @@ python debian_source_eventhandler() {
         })
         bb.warn('debian security update repository is enabled')
 
+        elts_update_mirror = d.getVar('DEBIAN_ELTS_SECURITY_UPDATE_MIRROR', True)
+        if elts_update_mirror is not None and elts_update_mirror != "":
+            update_targets.insert(0, {
+                'debian_mirror': elts_update_mirror,
+                'debian_security_update_enabled': True,
+            })
+            bb.warn('debian ELTS security update repository is enabled')
+
     debian_source_enabled = d.getVar('DEBIAN_SOURCE_ENABLED', True)
     if debian_source_enabled == '0':
         # Nothing to do
         return
 
     for update_target in update_targets:
-        if not fetch_Sources_xz(update_target['debian_mirror'], update_target['debian_security_update_enabled'], d):
+        if not fetch_Sources_gz(update_target['debian_mirror'], update_target['debian_security_update_enabled'], d):
             continue
 
         old_pkg_dpv_map = get_pkg_dpv_map(d)
-        parse_Sources_xz(old_pkg_dpv_map, update_target['debian_security_update_enabled'], d)
+        parse_Sources_gz(old_pkg_dpv_map, update_target['debian_security_update_enabled'], d)
         new_pkg_dpv_map = get_pkg_dpv_map(d)
 
         # Show a warning if version has been changed
