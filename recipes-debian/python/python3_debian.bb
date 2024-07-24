@@ -32,7 +32,6 @@ SRC_URI += " \
     file://0001-Lib-sysconfig.py-fix-another-place-where-lib-is-hard.patch \
     file://restore_site-packages_in_sitepackages_paths.diff \
     file://0020-configure.ac-setup.py-do-not-add-a-curses-include-pa.patch \
-    file://0001-Lib-test-test_zipfile.py-Fix-test_zipfile-test-crash.patch \
 "
 
 SRC_URI_append_class-native = " \
