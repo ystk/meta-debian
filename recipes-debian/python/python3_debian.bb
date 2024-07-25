@@ -52,6 +52,12 @@ do_debian_patch_prepend() {
 
 	# Use qemu-wrapper instead, so it can be cross built
 	sed -i -e "/^profiled-build.diff/d" ${DEBIAN_UNPACK_DIR}/debian/patches/series
+
+        # The expat package version does not match, so commented out to exclude patches that for modify the test code.
+        # '0003-bpo-46811-Make-test-suite-support-Expat-2.4.5-GH-314.patch' requires libexpat >= 2.4.5
+       sed -i -e "/^0003-bpo-46811-Make-test-suite-support-Expat-2.4.5-GH-314.patch/s/^/#/" ${DEBIAN_UNPACK_DIR}/debian/patches/series
+        # '0004-3.8-gh-115133-Fix-tests-for-XMLPullParser-with-Expat.patch' requires expat 2.6
+       sed -i -e "/^0004-3.8-gh-115133-Fix-tests-for-XMLPullParser-with-Expat.patch/s/^/#/" ${DEBIAN_UNPACK_DIR}/debian/patches/series
 }
 
 inherit autotools pkgconfig qemu ptest multilib_header update-alternatives
