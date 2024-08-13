@@ -1,0 +1,58 @@
+From a27b914a6ed9c01bcee85c1b8d748a6b094caa05 Mon Sep 17 00:00:00 2001
+From: "Bernhard M. Wiedemann" <bwiedemann@suse.de>
+Date: Sun, 14 Apr 2019 16:53:52 +0200
+Subject: [PATCH] Extend test cert to 2049-05-27
+
+instead of expiring in 2024-02-29
+This update did not trigger y2038 bugs on 32-bit systems.
+
+Without this patch, one test fails after 2024:
+ doit:124: rsa pss key: gnutls_x509_crt_verify_data2                    |
+ FAIL x509sign-verify (exit status: 1)
+
+Signed-off-by: Bernhard M. Wiedemann <bwiedemann@suse.de>
+---
+ tests/cert-common.h | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/tests/cert-common.h b/tests/cert-common.h
+index 80cdffd77..86aeb5c92 100644
+--- a/tests/cert-common.h
++++ b/tests/cert-common.h
+@@ -940,7 +940,7 @@ static char server_ca3_rsa_pss_cert_pem[] =
+ 	"-----BEGIN CERTIFICATE-----\n"
+ 	"MIIEAjCCAjqgAwIBAgIMWSa+iBMb7BVvI0GIMD0GCSqGSIb3DQEBCjAwoA0wCwYJ\n"
+ 	"YIZIAWUDBAIBoRowGAYJKoZIhvcNAQEIMAsGCWCGSAFlAwQCAaIDAgEgMA8xDTAL\n"
+-	"BgNVBAMTBENBLTMwHhcNMDQwMjI5MTUyMTQyWhcNMjQwMjI5MTUyMTQxWjANMQsw\n"
++	"BgNVBAMTBENBLTMwHhcNMTkwNDE1MDkyMjIwWhcNNDkxMjMxMDkyMjIwWjANMQsw\n"
+ 	"CQYDVQQGEwJHUjCCAVIwPQYJKoZIhvcNAQEKMDCgDTALBglghkgBZQMEAgGhGjAY\n"
+ 	"BgkqhkiG9w0BAQgwCwYJYIZIAWUDBAIBogMCASADggEPADCCAQoCggEBAL8TnzAG\n"
+ 	"W6iLlapD7ebOX8jXrmA9Pa/NKAxDeeDEu/7TMvtspK8LF92tcxi6p+O0OfRNEAJY\n"
+@@ -951,15 +951,15 @@ static char server_ca3_rsa_pss_cert_pem[] =
+ 	"8dZ4FgVEOYQRuSUCAwEAAaNQME4wDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQUjFqe\n"
+ 	"vO9heHT9V24WV1ovs7pvUvMwHwYDVR0jBBgwFoAU+aiGGWO2pBQTYHYPAZo1Nu/x\n"
+ 	"tK8wPQYJKoZIhvcNAQEKMDCgDTALBglghkgBZQMEAgGhGjAYBgkqhkiG9w0BAQgw\n"
+-	"CwYJYIZIAWUDBAIBogMCASADggGBABg5Cmmo0jrs+mTT5cTOozda9zSIe+rH6NxQ\n"
+-	"xms99hYvMiTv6RENR3DzJqNhQAvQkFrOpW+rnXRDROmETc8TYaX1pgbwZUCldTaZ\n"
+-	"c+2zybs3p3/yHFmVc39IWD2I5CbUxIHils9zM1BNvBaeoLTqX/BfNv+VBglDKF4/\n"
+-	"x4mUozoInwAYHjQGBKXPkZbITq6tYJ0uF8TjMS6bbqDSrUvvCNjX9fQ8IUQ0zRyk\n"
+-	"HHgVV/zrQT47yOOE6MkWrnCGob9vKAxWtVsPmoc5DQnh/nFIu8mWPMKMjeMNASNa\n"
+-	"9VqE1DlAadOP/WDEmrGiMB8Gf1MqYEMhwsMBh3AorrE7Y31sM6K+mJ8P6e0jS+rl\n"
+-	"++MtMqoNcvH9LAP1Tu6sRTw0kbXuz+GvDiQq0BEHxQIriK7luO3Z9nLOf/joyIMZ\n"
+-	"DYzEnfIkmL9zQqtfyeh+KQYGQwt3SiucRPhB05AvW68RZ4QaAJ1aSNot1vUpth4U\n"
+-	"dPVrVe13NnAP8tV4a8PisLaz9fHLnA==\n"
++	"CwYJYIZIAWUDBAIBogMCASADggGBAAgVZdGqSwhaa8c/KuqsnELoK5QlzdSUNZ0O\n"
++	"J31nVQyOmIJtqR14nMndU0y1iowAoj0osZFYjxjN6e2AqUF7R22uhtxmG6rr0YEi\n"
++	"XS+rNpbs7+gY/3hK30vo376QL85+U4v4HuTCd+yX8bY9VPqwZBMYO5rcDyXG82xC\n"
++	"ZKXT/Tr7XD80iMFjyR2cvRAjoZQeXbWzNE4AEm0jNz2F5Qnl6uSgtpDkHYKgr9xq\n"
++	"yUhm/WNKG86pzBxfcFju4prqBLiwUZh068b6znBAS0wMflrF/lznu01QqDhK6mz3\n"
++	"cSn5LlzoKjuouAWdZRieqokr1mNiWggmX5n2qKM9FJtDQctsvntCf/freAfy+Xmu\n"
++	"Tm055R9UzX76mL89eXY92U++HR8Y5IO5lqY1f13rzWK5rJB9qjz/Mamj9xR6Egoa\n"
++	"hh1ysRItcTCFJI5xKb/i3hHv94U12EH1IfFHofptr1pyCtAeOhJytWPndCiB2m1q\n"
++	"M2k3tl6cHvlUz7DpgnxNniuQ/dQ4MA==\n"
+ 	"-----END CERTIFICATE-----\n";
+ 
+ const gnutls_datum_t server_ca3_rsa_pss_cert = { (unsigned char*)server_ca3_rsa_pss_cert_pem,
+-- 
+2.25.1
+

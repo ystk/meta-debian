@@ -21,9 +21,15 @@ require recipes-debian/sources/gnutls28.inc
 DEPENDS = "nettle gmp virtual/libiconv libunistring"
 DEPENDS_append_libc-musl = " argp-standalone"
 
-SRC_URI += "file://arm_eabi.patch"
+FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
+SRC_URI += " \
+    file://arm_eabi.patch \
+    file://run-ptest \
+    file://Add-ptest-support.patch \
+    file://0001-Extend-test-cert-to-2049-05-27.patch \
+"
 
-inherit autotools texinfo pkgconfig gettext lib_package gtk-doc
+inherit autotools texinfo pkgconfig gettext lib_package gtk-doc ptest
 
 PACKAGECONFIG ??= "libidn"
 
@@ -54,10 +60,16 @@ do_configure_prepend() {
 	done
 }
 
+do_compile_ptest() {
+    oe_runmake -C tests buildtest-TESTS
+}
+
 PACKAGES =+ "${PN}-openssl ${PN}-xx"
 
 FILES_${PN}-dev += "${bindir}/gnutls-cli-debug"
 FILES_${PN}-openssl = "${libdir}/libgnutls-openssl.so.*"
 FILES_${PN}-xx = "${libdir}/libgnutlsxx.so.*"
+
+RDEPENDS_${PN}-ptest += "python3"
 
 BBCLASSEXTEND = "native nativesdk"

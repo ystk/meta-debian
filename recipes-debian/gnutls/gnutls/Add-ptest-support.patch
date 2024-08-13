@@ -1,0 +1,54 @@
+From 6abc86acecff5a30173eb78a971ec5b65f77e1de Mon Sep 17 00:00:00 2001
+From: Ravineet Singh <ravineet.a.singh@est.tech>
+Date: Tue, 10 Jan 2023 16:11:10 +0100
+Subject: [PATCH] gnutls: add ptest support
+
+Upstream-Status: Inappropriate [embedded specific]
+Signed-off-by: Ravineet Singh <ravineet.a.singh@est.tech>
+---
+ Makefile.am       | 3 +++
+ configure.ac      | 2 ++
+ tests/Makefile.am | 6 ++++++
+ 3 files changed, 11 insertions(+)
+
+diff --git a/Makefile.am b/Makefile.am
+index b4d0db3..37788f7 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -180,4 +180,7 @@ dist-hook: libopts-check symbol-check
+ 	mv ChangeLog $(distdir)
+ 	touch $(distdir)/doc/*.html $(distdir)/doc/*.pdf $(distdir)/doc/*.info
+ 
++install-ptest:
++	$(MAKE) -C tests DESTDIR=$(DESTDIR)/tests $@
++
+ .PHONY: abi-check abi-dump pic-check symbol-check local-code-coverage-output files-update libopts-check AUTHORS
+diff --git a/configure.ac b/configure.ac
+index b686726..1eeb4aa 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -903,6 +903,8 @@ AC_SUBST(LIBGNUTLS_CFLAGS)
+ 
+ AM_CONDITIONAL(NEEDS_LIBRT, test "$gnutls_needs_librt" = "yes")
+ 
++AM_EXTRA_RECURSIVE_TARGETS([buildtest-TESTS])
++
+ AC_DEFINE([GNUTLS_COMPAT_H], 1, [Make sure we don't use old features in code.])
+ AC_DEFINE([GNUTLS_INTERNAL_BUILD], 1, [We allow temporarily usage of deprecated functions - until they are removed.])
+ 
+diff --git a/tests/Makefile.am b/tests/Makefile.am
+index cf3b22a..0850770 100644
+--- a/tests/Makefile.am
++++ b/tests/Makefile.am
+@@ -552,5 +552,11 @@ if WANT_TEST_SUITE
+ LOG_COMPILER = $(VALGRIND)
+ endif
+ 
++install-ptest: $(check_PROGRAMS)
++	@$(INSTALL) -d $(DESTDIR)
++	@for file in $^; do \
++		$(INSTALL_PROGRAM) $$file $(DESTDIR) ; \
++	done
++
+ distclean-local:
+ 	rm -rf softhsm-*.db softhsm-*.config *.tmp tmp-* x509-crt-list-import-url.config.db
