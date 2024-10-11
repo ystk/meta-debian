@@ -46,6 +46,11 @@ do_install_ptest() {
 	    -e 's:${S}/config/missing::g' \
 	    -e 's:${WORKDIR}::g' \
 	    -e '/libkeymap_.*_SOURCES =/d' -e '/$(EXEEXT):/,/^$/d' \
+	    -e '/^VPATH/s/= .*$/= ../g' \
+	    -e '/^abs_srcdir/s/= .*$/= ../g' \
+	    -e '/^abs_top_srcdir/s/= .*$/= ../g' \
+	    -e '/^srcdir/s/= .*$/= ../g' \
+	    -e '/^top_srcdir/s/= .*$/= ../g' \
 	    ${D}${PTEST_PATH}/tests/Makefile
 
 	find ${B}/tests -executable -exec install {} ${D}${PTEST_PATH}/tests \;
@@ -60,6 +65,8 @@ FILES_${PN}-consolefonts = "${datadir}/consolefonts"
 FILES_${PN}-consoletrans = "${datadir}/consoletrans"
 FILES_${PN}-keymaps = "${datadir}/keymaps"
 FILES_${PN}-unimaps = "${datadir}/unimaps"
+
+RDEPENDS_${PN}-ptest += " make bash coreutils"
 
 inherit update-alternatives
 
