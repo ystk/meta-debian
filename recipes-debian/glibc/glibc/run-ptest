@@ -1,0 +1,26 @@
+#!/bin/sh
+# ptest script for glibc - to run all unit tests
+# Run with 'ptest-runner glibc'
+
+output() {
+    retcode=$?
+    if [ $retcode -eq 0 ]
+        then echo "PASS: $i"
+    elif [ $retcode -eq 77 ]
+        then echo "SKIP: $i"
+    else echo "FAIL: $i"
+    fi
+}
+
+# Allow altering time on the target
+export GLIBC_TEST_ALLOW_TIME_SETTING="1"
+
+tst_items=$(find ${PWD}/tests/glibc-ptest/ -name '.debug' -prune -o -type f -name 'tst-*' -print)
+
+# Run tests
+for i in ${tst_items}
+do
+    $i >/dev/null 2>&1
+    output
+done
+

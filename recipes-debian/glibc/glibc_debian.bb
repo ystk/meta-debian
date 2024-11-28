@@ -171,3 +171,11 @@ FILES_${PN} += "${sysconfdir}/nsswitch.conf"
 FILES_${PN} += "${base_libdir}/libcrypt*.so.* ${base_libdir}/libcrypt-*.so"
 
 BBCLASSEXTEND = "nativesdk"
+
+PTEST_ENABLED = "${@bb.utils.contains('DISTRO_FEATURES', 'ptest', '1', '0', d)}"
+PTEST_ENABLED_class-native = ""
+PTEST_ENABLED_class-nativesdk = ""
+PTEST_ENABLED_class-cross-canadian = ""
+PACKAGES += "${@bb.utils.contains('PTEST_ENABLED', '1', 'glibc-ptest', '', d)}"
+ALLOW_EMPTY_glibc-ptest = "1"
+RDEPENDS_glibc-ptest_class-target = "glibc-tests"
