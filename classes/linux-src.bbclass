@@ -37,3 +37,8 @@ SRCREV = "${LINUX_GIT_SRCREV}"
 PV = "git${SRCPV}"
 
 S = "${WORKDIR}/git"
+
+# use GITPKGVTAG for cve-check
+inherit gitpkgv
+do_cve_check[depends] += "linux-base:do_fetch"
+CVE_VERSION ??= "${@d.getVar('GITPKGVTAG').split('-')[0]}"
