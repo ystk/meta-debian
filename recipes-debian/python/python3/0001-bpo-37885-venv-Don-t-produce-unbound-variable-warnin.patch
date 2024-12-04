@@ -1,0 +1,55 @@
+diff -Puar Python-3.7.3/Lib/test/test_venv.py Python-3.7.3.new/Lib/test/test_venv.py
+--- Python-3.7.3/Lib/test/test_venv.py	2024-12-04 13:27:57.264762488 +0900
++++ Python-3.7.3.new/Lib/test/test_venv.py	2024-12-04 13:35:49.714781209 +0900
+@@ -9,6 +9,7 @@
+ import os
+ import os.path
+ import re
++import shutil
+ import struct
+ import subprocess
+ import sys
+@@ -392,6 +393,25 @@
+             'print(Pool(1).apply_async("Python".lower).get(3))'])
+         self.assertEqual(out.strip(), "python".encode())
+ 
++    @unittest.skipIf(os.name == 'nt', 'not relevant on Windows')
++    def test_deactivate_with_strict_bash_opts(self):
++        bash = shutil.which("bash")
++        if bash is None:
++            self.skipTest("bash required for this test")
++        rmtree(self.env_dir)
++        builder = venv.EnvBuilder(clear=True)
++        builder.create(self.env_dir)
++        activate = os.path.join(self.env_dir, self.bindir, "activate")
++        test_script = os.path.join(self.env_dir, "test_strict.sh")
++        with open(test_script, "w") as f:
++            f.write("set -euo pipefail\n"
++                    f"source {activate}\n"
++                    "deactivate\n")
++        out, err = check_output([bash, test_script])
++        self.assertEqual(out, "".encode())
++        self.assertEqual(err, "".encode())
++
++
+ @skipInVenv
+ class EnsurePipTest(BaseTest):
+     """Test venv module installation of pip."""
+diff -Puar Python-3.7.3/Lib/venv/scripts/common/activate Python-3.7.3.new/Lib/venv/scripts/common/activate
+--- Python-3.7.3/Lib/venv/scripts/common/activate	2024-12-04 13:27:57.264762488 +0900
++++ Python-3.7.3.new/Lib/venv/scripts/common/activate	2024-12-04 13:32:20.220117443 +0900
+@@ -28,7 +28,7 @@
+     fi
+ 
+     unset VIRTUAL_ENV
+-    if [ ! "$1" = "nondestructive" ] ; then
++    if [ ! "${1:-}" = "nondestructive" ] ; then
+     # Self destruct!
+         unset -f deactivate
+     fi
+diff -Puar Python-3.7.3/Misc/NEWS.d/next/Library/2019-08-19-10-31-41.bpo-37885.4Nc9sp.rst Python-3.7.3.new/Misc/NEWS.d/next/Library/2019-08-19-10-31-41.bpo-37885.4Nc9sp.rst
+--- Python-3.7.3/Misc/NEWS.d/next/Library/2019-08-19-10-31-41.bpo-37885.4Nc9sp.rst	1970-01-01 09:00:00.000000000 +0900
++++ Python-3.7.3.new/Misc/NEWS.d/next/Library/2019-08-19-10-31-41.bpo-37885.4Nc9sp.rst	2024-12-04 13:32:20.220117443 +0900
+@@ -0,0 +1 @@
++venv: Don't generate unset variable warning on deactivate.
+\ No newline at end of file
