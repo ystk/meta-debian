@@ -163,3 +163,8 @@ ALTERNATIVE_${PN}-scp = "scp"
 ALTERNATIVE_${PN}-ssh = "ssh"
 
 BBCLASSEXTEND += "nativesdk"
+
+# Upstream does not consider CVE-2023-51767 a bug underlying in OpenSSH and
+# does not intent to address it in OpenSSH
+# https://security-tracker.debian.org/tracker/CVE-2023-51767
+CVE_CHECK_WHITELIST += "CVE-2023-51767"
