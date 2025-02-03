@@ -30,10 +30,16 @@ LINUX_GIT_PREFIX ??= ""
 LINUX_GIT_REPO ??= "linux-cip.git"
 LINUX_GIT_BRANCH ??= "linux-4.19.y-cip"
 LINUX_GIT_SRCREV ??= "${AUTOREV}"
+LINUX_VERSION ??= "4.19"
 
 SRC_URI = "${LINUX_GIT_URI}/${LINUX_GIT_PREFIX}${LINUX_GIT_REPO};branch=${LINUX_GIT_BRANCH};protocol=${LINUX_GIT_PROTOCOL}"
 
 SRCREV = "${LINUX_GIT_SRCREV}"
-PV = "git${SRCPV}"
+PV = "${LINUX_VERSION}+git${SRCPV}"
 
 S = "${WORKDIR}/git"
+
+# use GITPKGVTAG for cve-check
+inherit gitpkgv
+do_cve_check[depends] += "linux-base:do_fetch"
+CVE_VERSION ??= "${@d.getVar('GITPKGVTAG').split('-')[0]}"
