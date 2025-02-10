@@ -11,16 +11,3 @@ index 8445ea5..34aed96 100644
  
  python_LTLIBRARIES = libxml2mod.la
  
-diff --git a/python/Makefile.in b/python/Makefile.in
-index 94a887f..ba2dd62 100644
---- a/python/Makefile.in
-+++ b/python/Makefile.in
-@@ -485,7 +485,7 @@ EXTRA_DIST = \
- @WITH_PYTHON_TRUE@AM_CPPFLAGS = \
- @WITH_PYTHON_TRUE@	-I$(top_builddir)/include \
- @WITH_PYTHON_TRUE@	-I$(top_srcdir)/include	\
--@WITH_PYTHON_TRUE@	$(PYTHON_INCLUDES)
-+@WITH_PYTHON_TRUE@	-I$(PYTHON_INCLUDES)
- 
- @WITH_PYTHON_TRUE@python_LTLIBRARIES = libxml2mod.la
- @WITH_PYTHON_TRUE@libxml2mod_la_SOURCES = libxml.c libxml_wrap.h libxml2-py.h libxml2-py.c types.c

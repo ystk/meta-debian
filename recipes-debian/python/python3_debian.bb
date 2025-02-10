@@ -32,6 +32,7 @@ SRC_URI += " \
     file://0001-Lib-sysconfig.py-fix-another-place-where-lib-is-hard.patch \
     file://restore_site-packages_in_sitepackages_paths.diff \
     file://0020-configure.ac-setup.py-do-not-add-a-curses-include-pa.patch \
+    file://0001-bpo-37885-venv-Don-t-produce-unbound-variable-warnin.patch \
 "
 
 SRC_URI_append_class-native = " \
@@ -305,7 +306,7 @@ FILES_${PN}-misc = "${libdir}/python${PYTHON_MAJMIN} ${libdir}/python${PYTHON_MA
 PACKAGES += "${PN}-man"
 FILES_${PN}-man = "${datadir}/man"
 
-RDEPENDS_${PN}-ptest = "${PN}-modules ${PN}-tests unzip bzip2 libgcc tzdata-europe coreutils sed netbase"
+RDEPENDS_${PN}-ptest = "${PN}-modules ${PN}-tests ${PN}-shell unzip bzip2 libgcc tzdata-europe coreutils sed netbase"
 RDEPENDS_${PN}-ptest_append_libc-glibc = " locale-base-tr-tr.iso-8859-9"
 RDEPENDS_${PN}-tkinter += "${@bb.utils.contains('PACKAGECONFIG', 'tk', 'tk tk-lib', '', d)}"
 RDEPENDS_${PN}-dev = ""
